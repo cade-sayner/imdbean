@@ -40,7 +40,7 @@ jobs:
             --backup-retention-period 7 \
             --no-multi-az \
             --db-subnet-group-name default-vpc-046b3be62e019e0d3 \
-            --publicly-accessible
+            --publicly-accessible \
             --vpc-security-group-ids sg-0536cb0b48f15f8c4 sg-0536cb0b48f15f8c4
       - name: Wait for RDS to be available
         if: env.DB_EXISTS == 'false'
