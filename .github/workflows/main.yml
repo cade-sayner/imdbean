@@ -16,6 +16,7 @@ jobs:
       - name: Set up Java (needed for Flyway)
         uses: actions/setup-java@v2
         with:
+          distribution: 'temurin'
           java-version: '11'
 
       - name: Install Flyway
@@ -24,8 +25,9 @@ jobs:
 
       - name: Run Flyway Migrate
         env:
-          DBUSER: secrets.USER
-          DBPASSWORD: secrets.PASSWORD
-          
+          DBUSER: ${{ secrets.USER }}
+          DBPASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          flyway migrate -url=jdbc:sqlserver://testserverkakaka.database.windows.net:1433;database=testDB;user=$DBUSER@testserverkakaka;password={$DBPASSWORD};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+          echo $DBUSER  # Debugging: Check if DBUSER is populated
+          echo "DBPASSWORD"  # Do not print password
+          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://testserverkakaka.database.windows.net:1433;database=testDB;user=$DBUSER@testserverkakaka;password={$DBPASSWORD};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
