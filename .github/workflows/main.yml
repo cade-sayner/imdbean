@@ -1,0 +1,31 @@
+name: Flyway Migrations
+
+on:
+  push:
+    branches:
+      - main  # Or any branch you want to trigger on
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Java (needed for Flyway)
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Install Flyway
+        run: |
+          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-11.3.1/flyway /usr/local/bin 
+
+      - name: Run Flyway Migrate
+        env:
+          DBUSER: secrets.USER
+          DBPASSWORD: secrets.PASSWORD
+          
+        run: |
+          flyway migrate -url=jdbc:sqlserver://testserverkakaka.database.windows.net:1433;database=testDB;user=$DBUSER@testserverkakaka;password={$DBPASSWORD};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
