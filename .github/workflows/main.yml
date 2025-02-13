@@ -6,21 +6,23 @@ on:
       - main  # Or any branch you want to trigger on
 
 jobs:
-  flyway-migrate:
+  migrate:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Step 2: Set up Flyway
-      - name: Set up Flyway
-        uses: flyway/flyway-action@v2
+      - name: Set up Java (needed for Flyway)
+        uses: actions/setup-java@v2
         with:
-          flywayVersion: '9.8'  # Specify the Flyway version you want
+          distribution: 'temurin'
+          java-version: '11'
 
-      # Step 3: Set up environment variables for RDS connection
+      - name: Install Flyway
+        run: |
+          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-11.3.1/flyway /usr/local/bin 
+
       - name: Set up environment variables
         run: |
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
@@ -40,9 +42,3 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      # Optional: Step to confirm migration success
-      - name: Confirm migration success
-        run: |
-          flyway -url=jdbc:sqlserver://${{ env.DB_HOST }}:${{ env.DB_PORT }};databaseName=${{ env.DB_NAME }} \
-                 -user=${{ env.DB_USERNAME }} -password=${{ env.DB_PASSWORD }} info
