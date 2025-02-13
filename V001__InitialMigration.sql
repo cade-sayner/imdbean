@@ -1,0 +1,3 @@
+CREATE TABLE MIGRATION_TEST_TABLE (
+    Test int
+)
