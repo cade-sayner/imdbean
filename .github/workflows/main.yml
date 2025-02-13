@@ -28,6 +28,4 @@ jobs:
           DBUSER: ${{ secrets.USER }}
           DBPASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          echo $DBUSER  # Debugging: Check if DBUSER is populated
-          echo "DBPASSWORD"  # Do not print password
-          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://testserverkakaka.database.windows.net:1433;database=testDB;user=$DBUSER@testserverkakaka;password={$DBPASSWORD};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
+          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://mr-bean-episode-catalog-db.c41puuwahfgy.af-south-1.rds.amazonaws.com:1433;database=mr-bean-episode-catalog-db;user=$DBUSER@testserverkakaka;password={$DBPASSWORD};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
