@@ -28,4 +28,4 @@ jobs:
           DBUSER: ${{ secrets.USER }}
           DBPASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://mr-bean-episode-catalog-db.c41puuwahfgy.af-south-1.rds.amazonaws.com:1433;database=mr-bean-episode-catalog-db;${{env.DBUSER}}=admin;password={$DBPASSWORD};encrypt=true;trustServerCertificate=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
+          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://mr-bean-episode-catalog-db.c41puuwahfgy.af-south-1.rds.amazonaws.com:1433;database=mr-bean-episode-catalog-db;user=${{env.DBUSER}};password={$DBPASSWORD};encrypt=true;trustServerCertificate=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
