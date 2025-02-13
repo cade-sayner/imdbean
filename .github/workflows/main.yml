@@ -64,8 +64,9 @@ jobs:
         run: |
           docker run --rm \
             -v $(pwd)/migrations:/flyway/sql \
+            -w /flyway \  # <-- Add this line: Sets the working directory inside the container
             flyway/flyway migrate \
             -url="jdbc:sqlserver://${{ env.RDS_ENDPOINT }}:1433;databaseName=${{ vars.DB_NAME }};encrypt=true;trustServerCertificate=true" \
             -user=${{ vars.DB_MASTER_USERNAME }} \
             -password=${{ secrets.DB_MASTER_PASSWORD }}
-            
+              
