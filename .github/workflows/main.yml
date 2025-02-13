@@ -1,32 +1,67 @@
-name: Flyway Migrations
-
+name: Deploy & Migrate on Master Push
+ 
 on:
   push:
     branches:
-      - main  # Or any branch you want to trigger on
-
+      - master  
 jobs:
-  migrate:
+  Create-rds-and-migrate:
     runs-on: ubuntu-latest
-
+ 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Java (needed for Flyway)
-        uses: actions/setup-java@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          distribution: 'temurin'
-          java-version: '11'
-
-      - name: Install Flyway
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+ 
+      - name: Check if RDS instance exists
+        id: check-db
         run: |
-          wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-11.3.1/flyway /usr/local/bin 
-      - name: Run Flyway Migrate
-        env:
-          DBUSER: ${{ secrets.USER }}
-          DBPASSWORD: ${{ secrets.PASSWORD }}
+          if aws rds describe-db-instances --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }} > /dev/null 2>&1; then
+            echo "DB_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "DB_EXISTS=false" >> $GITHUB_ENV
+          fi
+ 
+      - name: Create RDS SQL Server instance if not exists
+        if: env.DB_EXISTS == 'false'
         run: |
-          echo $DBUSER  # Debugging: Check if DBUSER is populated
-          echo "DBPASSWORD"  # Do not print password
-          flyway migrate -locations=filesystem:./sql/migrations -url="jdbc:sqlserver://mr-bean-episode-catalog-db.c41puuwahfgy.af-south-1.rds.amazonaws.com:1433;database=mr-bean-episode-catalog-db;user=$DBUSER;password={$DBPASSWORD};encrypt=true;trustServerCertificate=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;"
+          aws rds create-db-instance \
+            --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }} \
+            --db-instance-class ${{ vars.DB_INSTANCE_CLASS }} \
+            --engine ${{ vars.DB_ENGINE }} \
+            --allocated-storage ${{ vars.DB_STORAGE }} \
+            --master-username ${{ vars.DB_MASTER_USERNAME }} \
+            --master-user-password ${{ secrets.DB_MASTER_PASSWORD }} \
+            --backup-retention-period 7 \
+            --no-multi-az 
+      - name: Wait for RDS to be available
+        if: env.DB_EXISTS == 'false'
+        run: |
+          echo "Waiting for RDS instance to be available..."
+          aws rds wait db-instance-available --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }}
+ 
+      - name: Get RDS Endpoint
+        run: |
+          ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)
+          echo "RDS_ENDPOINT=$ENDPOINT" >> $GITHUB_ENV
+ 
+      - name: Create Initial Database
+        run: |
+          docker run --rm \
+            mcr.microsoft.com/mssql-tools \
+            /opt/mssql-tools/bin/sqlcmd -S ${{ env.RDS_ENDPOINT }},1433 -U ${{ vars.DB_MASTER_USERNAME }} -P ${{ secrets.DB_MASTER_PASSWORD }} -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'IMDBean') CREATE DATABASE IMDBean;"
+ 
+      - name: Debug Connection String
+        run: |
+          echo "Using connection string: jdbc:sqlserver://${{ env.RDS_ENDPOINT }}:1433;databaseName=${{ vars.DB_NAME }};encrypt=true;trustServerCertificate=true"
+      - name: Run Flyway migrations
+        run: |
+          docker run --rm \
+            -v $(pwd)/migrations:/flyway/sql \
+            flyway/flyway migrate \
+            -url="jdbc:sqlserver://${{ env.RDS_ENDPOINT }}:1433;databaseName=${{ vars.DB_NAME }};encrypt=true;trustServerCertificate=true" \
+            -user=${{ vars.DB_MASTER_USERNAME }} \
+            -password=${{ secrets.DB_MASTER_PASSWORD }}
