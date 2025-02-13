@@ -39,7 +39,8 @@ jobs:
             --master-user-password ${{ secrets.DB_MASTER_PASSWORD }} \
             --backup-retention-period 7 \
             --no-multi-az \
-            --db-subnet-group-name default-vpc-046b3be62e019e0d3
+            --db-subnet-group-name default-vpc-046b3be62e019e0d3 \
+            --publicly-accessible
       - name: Wait for RDS to be available
         if: env.DB_EXISTS == 'false'
         run: |
