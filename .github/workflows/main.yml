@@ -62,6 +62,12 @@ jobs:
           
       - name: Run Flyway migrations
         run: |
+          ls -la /
+          ls -la ./
+          ls -la ../
+          ls -la "$GITHUB_WORKSPACE"
+          ls -la "$GITHUB_WORKSPACE"/
+          
           docker run --rm \
             -v "$GITHUB_WORKSPACE/migrations:/flyway/sql" \
             flyway/flyway migrate \
