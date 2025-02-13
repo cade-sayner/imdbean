@@ -62,7 +62,6 @@ jobs:
       - name: Install Flyway
         run: |
           wget -qO- https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-11.3.1/flyway /usr/local/bin 
-
       - name: Run Flyway Migrate
         env:
           DBUSER: ${{ secrets.USER }}
@@ -70,10 +69,8 @@ jobs:
         run: |
           echo $DBUSER  # Debugging: Check if DBUSER is populated
           echo "DBPASSWORD"  # Do not print password
-          flyway migrate 
-            -url="jdbc:sqlserver://${{ env.RDS_ENDPOINT }}:1433;databaseName=${{ vars.DB_NAME }};encrypt=true;trustServerCertificate=true" \
+          flyway migrate -url="jdbc:sqlserver://${{ env.RDS_ENDPOINT }}:1433;databaseName=${{ vars.DB_NAME }};encrypt=true;trustServerCertificate=true" \
             -user=${{ vars.DB_MASTER_USERNAME }} \
             -password=${{ secrets.DB_MASTER_PASSWORD }}
-      
     
             
