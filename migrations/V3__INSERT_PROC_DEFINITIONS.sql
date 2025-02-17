@@ -231,6 +231,5 @@ BEGIN
     JOIN [reel] r ON s.reel_id = r.id
     JOIN [actor] a ON d.actor_id = a.id
     WHERE d.line_text LIKE '%' + @searchTerm + '%'
-       OR SOUNDEX(d.line_text) = SOUNDEX(@searchTerm);
 END;
 GO
