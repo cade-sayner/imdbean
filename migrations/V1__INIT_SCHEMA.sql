@@ -221,6 +221,7 @@ ALTER TABLE roles ADD CONSTRAINT UQ_Role_Name UNIQUE (name);
 
 -- Automatically Assign Default Role to New Users
 -- Whenever a new user is added, they are automatically assigned the "Viewer" role.
+GO
 CREATE TRIGGER trg_AssignDefaultRole
 ON users
 AFTER INSERT
@@ -235,6 +236,7 @@ BEGIN
         SELECT id, @DefaultRoleID FROM inserted;
     END
 END;
+GO
 
 -- Prevent Deleting a Series If It Has Associated Reels
 CREATE TRIGGER trg_PreventSeriesDelete
@@ -249,7 +251,7 @@ BEGIN
     END
     DELETE FROM series WHERE id IN (SELECT id FROM deleted);
 END;
-
+GO
 -- Prevent Rating a Scene More Than Once Per User
 CREATE TRIGGER trg_PreventDuplicateRating
 ON rating
@@ -267,7 +269,7 @@ BEGIN
     INSERT INTO rating (user_id, scene_id, rating, timestamp)
     SELECT user_id, scene_id, rating, timestamp FROM inserted;
 END;
-
+GO
 -- Cascade Delete: Remove Related Data When a Scene Is Deleted
 CREATE TRIGGER trg_CascadeDeleteScene
 ON scene
@@ -281,7 +283,7 @@ BEGIN
     DELETE FROM thumbnail WHERE scene_id IN (SELECT id FROM deleted);
     DELETE FROM scene WHERE id IN (SELECT id FROM deleted);
 END;
-
+GO
 
 -- Trigger: Prevent Overlapping Scenes in the Same Reel on INSERT
 CREATE TRIGGER trg_PreventOverlappingScenes
@@ -304,7 +306,7 @@ BEGIN
     INSERT INTO scene (reel_id, timestamp, title, plot_description, filming_date, location_id)
     SELECT reel_id, timestamp, title, plot_description, filming_date, location_id FROM inserted;
 END;
-
+GO
 
 -- Trigger: Prevent Overlapping Scenes in the Same Reel on UPDATE
 CREATE TRIGGER trg_PreventOverlappingScenes_Update
