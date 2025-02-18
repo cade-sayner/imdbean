@@ -4,7 +4,7 @@ CREATE TABLE [scene] (
   [timestamp] int NOT NULL,
   [duration] int NOT NULL,
   [title] nvarchar(255),
-  [plot_description] text NOT NULL,
+  [plot_description] varchar(200) NOT NULL,
   [filming_date] date NOT NULL,
   [location_id] int NOT NULL
 )
@@ -21,7 +21,7 @@ CREATE TABLE [reel] (
   [reel_type_id] int,
   [series_id] int,
   [title] nvarchar(255) NOT NULL,
-  [description] text,
+  [description] nvarchar(255),
   [release_date] date NOT NULL
 )
 GO
@@ -29,7 +29,7 @@ GO
 CREATE TABLE [series] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [title] nvarchar(255) NOT NULL,
-  [description] text,
+  [description] nvarchar(255),
   [start_date] date,
   [end_date] date
 )
@@ -38,7 +38,7 @@ GO
 CREATE TABLE [location] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [name] nvarchar(255) NOT NULL,
-  [address] text,
+  [address] nvarchar(255),
   [country] nvarchar(100) NOT NULL
 )
 GO
@@ -46,7 +46,7 @@ GO
 CREATE TABLE [actor] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [name] nvarchar(255) NOT NULL,
-  [bio] text,
+  [bio] varchar(255),
   [date_of_birth] date
 )
 GO
@@ -62,7 +62,7 @@ CREATE TABLE [dialog] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [scene_id] int NOT NULL,
   [actor_id] int NOT NULL,
-  [line_text] text NOT NULL,
+  [line_text] varchar(255) NOT NULL,
   [line_order] int NOT NULL
 )
 GO
@@ -88,7 +88,7 @@ CREATE TABLE [comment] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [user_id] int NOT NULL,
   [scene_id] int NOT NULL,
-  [comment_text] text NOT NULL,
+  [comment_text] varchar(255) NOT NULL,
   [timestamp] datetime NOT NULL
 )
 GO
@@ -127,7 +127,7 @@ GO
 CREATE TABLE [permissions] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [name] nvarchar(100) UNIQUE NOT NULL,
-  [description] text
+  [description] varchar(255)
 )
 GO
 
@@ -205,7 +205,7 @@ GO
 ALTER TABLE rating ADD CONSTRAINT CHK_Rating_Value CHECK (rating BETWEEN 1 AND 10);
 
 -- Ensure Comments Are Not Empty
-ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (CAST(comment_text AS VARCHAR(MAX)) > 0);
+ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (LEN(comment_text) > 0);
 
 -- Ensure Release Date Is Not in the Future
 ALTER TABLE reel ADD CONSTRAINT CHK_Release_Date CHECK (release_date <= GETDATE());
