@@ -341,6 +341,22 @@ BEGIN
 END;
 GO
 
+-- Create the SceneRatings View that aggregates the Provides a summary of the average rating for each scene.
+-- This is supposed to make it easy to fetch scene details along with their average rating.
+CREATE VIEW SceneRatings AS
+SELECT 
+    s.id AS scene_id,
+    s.title,
+    s.plot_description,
+    s.filming_date,
+    s.location_id,
+    COUNT(r.user_id) AS total_ratings,
+    AVG(r.rating) AS avg_rating
+FROM scene s
+LEFT JOIN rating r ON s.id = r.scene_id
+GROUP BY s.id, s.title, s.plot_description, s.filming_date, s.location_id;
+
+
 
 
 
