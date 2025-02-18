@@ -2,9 +2,9 @@ name: Deploy & Migrate on Master Push
  
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main  
+  # push:
+    #branches:
+      #- main  
 jobs:
   Create-rds-and-migrate:
     runs-on: ubuntu-latest
