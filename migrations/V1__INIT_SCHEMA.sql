@@ -303,8 +303,8 @@ BEGIN
         RETURN;
     END
     -- If no conflicts, proceed with insert/update
-    INSERT INTO scene (reel_id, timestamp, title, plot_description, filming_date, location_id)
-    SELECT reel_id, timestamp, title, plot_description, filming_date, location_id FROM inserted;
+    INSERT INTO scene (reel_id, timestamp, duration, title, plot_description, filming_date, location_id)
+    SELECT reel_id, timestamp, duration, title, plot_description, filming_date, location_id FROM inserted;
 END;
 GO
 
@@ -331,6 +331,7 @@ BEGIN
     SET 
         reel_id = i.reel_id,
         timestamp = i.timestamp,
+        duration = i.duration,
         title = i.title,
         plot_description = i.plot_description,
         filming_date = i.filming_date,
