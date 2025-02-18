@@ -2,6 +2,7 @@ CREATE TABLE [scene] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [reel_id] int NOT NULL,
   [timestamp] int NOT NULL,
+  [duration] int NOT NULL,
   [title] nvarchar(255),
   [plot_description] text NOT NULL,
   [filming_date] date NOT NULL,
@@ -196,3 +197,151 @@ GO
 
 ALTER TABLE [role_permissions] ADD FOREIGN KEY ([permission_id]) REFERENCES [permissions] ([id])
 GO
+
+
+-- Constraints for data integrity
+
+-- Ensure Ratings Are Between 1 and 10
+ALTER TABLE rating ADD CONSTRAINT CHK_Rating_Value CHECK (rating BETWEEN 1 AND 10);
+
+-- Ensure Comments Are Not Empty
+ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (LEN(comment_text) > 0);
+
+-- Ensure Release Date Is Not in the Future
+ALTER TABLE reel ADD CONSTRAINT CHK_Release_Date CHECK (release_date <= GETDATE());
+
+-- Ensure Scene Timestamps Are Non-Negative
+ALTER TABLE scene ADD CONSTRAINT CHK_Scene_Timestamp CHECK (timestamp >= 0);
+
+-- Ensure Unique Role Names
+ALTER TABLE roles ADD CONSTRAINT UQ_Role_Name UNIQUE (name);
+
+-- Triggers for Enforcing Business Rules
+
+
+-- Automatically Assign Default Role to New Users
+-- Whenever a new user is added, they are automatically assigned the "Viewer" role.
+CREATE TRIGGER trg_AssignDefaultRole
+ON users
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @DefaultRoleID INT;
+    SELECT @DefaultRoleID = id FROM roles WHERE name = 'Viewer';
+
+    IF @DefaultRoleID IS NOT NULL
+    BEGIN
+        INSERT INTO user_roles (user_id, role_id)
+        SELECT id, @DefaultRoleID FROM inserted;
+    END
+END;
+
+-- Prevent Deleting a Series If It Has Associated Reels
+CREATE TRIGGER trg_PreventSeriesDelete
+ON series
+INSTEAD OF DELETE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM reel WHERE series_id IN (SELECT id FROM deleted))
+    BEGIN
+        RAISERROR ('Cannot delete a series that has associated reels.', 16, 1);
+        RETURN;
+    END
+    DELETE FROM series WHERE id IN (SELECT id FROM deleted);
+END;
+
+-- Prevent Rating a Scene More Than Once Per User
+CREATE TRIGGER trg_PreventDuplicateRating
+ON rating
+INSTEAD OF INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM rating r
+        INNER JOIN inserted i ON r.user_id = i.user_id AND r.scene_id = i.scene_id
+    )
+    BEGIN
+        RAISERROR ('User has already rated this scene.', 16, 1);
+        RETURN;
+    END
+    INSERT INTO rating (user_id, scene_id, rating, timestamp)
+    SELECT user_id, scene_id, rating, timestamp FROM inserted;
+END;
+
+-- Cascade Delete: Remove Related Data When a Scene Is Deleted
+CREATE TRIGGER trg_CascadeDeleteScene
+ON scene
+INSTEAD OF DELETE
+AS
+BEGIN
+    DELETE FROM scene_actor WHERE scene_id IN (SELECT id FROM deleted);
+    DELETE FROM dialog WHERE scene_id IN (SELECT id FROM deleted);
+    DELETE FROM rating WHERE scene_id IN (SELECT id FROM deleted);
+    DELETE FROM comment WHERE scene_id IN (SELECT id FROM deleted);
+    DELETE FROM thumbnail WHERE scene_id IN (SELECT id FROM deleted);
+    DELETE FROM scene WHERE id IN (SELECT id FROM deleted);
+END;
+
+
+-- Trigger: Prevent Overlapping Scenes in the Same Reel on INSERT
+CREATE TRIGGER trg_PreventOverlappingScenes
+ON scene
+INSTEAD OF INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN scene s ON i.reel_id = s.reel_id 
+        AND i.id <> s.id  
+        AND ABS((i.timestamp + i.duration/2) - (s.timestamp + s.duration/2)) < i.duration/2 + s.duration/2
+    )
+    BEGIN
+        RAISERROR ('Scene timestamps cannot overlap within the same reel.', 16, 1);
+        RETURN;
+    END
+    -- If no conflicts, proceed with insert/update
+    INSERT INTO scene (reel_id, timestamp, title, plot_description, filming_date, location_id)
+    SELECT reel_id, timestamp, title, plot_description, filming_date, location_id FROM inserted;
+END;
+
+
+-- Trigger: Prevent Overlapping Scenes in the Same Reel on UPDATE
+CREATE TRIGGER trg_PreventOverlappingScenes_Update
+ON scene
+INSTEAD OF UPDATE
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN scene s ON i.reel_id = s.reel_id 
+        AND i.id <> s.id  
+        AND ABS((i.timestamp + i.duration/2) - (s.timestamp + s.duration/2)) < i.duration/2 + s.duration/2
+    )
+    BEGIN
+        RAISERROR ('Scene timestamps cannot overlap within the same reel.', 16, 1);
+        RETURN;
+    END
+
+    -- If no conflicts, proceed with update
+    UPDATE scene
+    SET 
+        reel_id = i.reel_id,
+        timestamp = i.timestamp,
+        title = i.title,
+        plot_description = i.plot_description,
+        filming_date = i.filming_date,
+        location_id = i.location_id
+    FROM inserted i
+    WHERE scene.id = i.id;
+END;
+GO
+
+
+
+
+
+
+
+
