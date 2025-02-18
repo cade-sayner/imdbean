@@ -205,7 +205,7 @@ GO
 ALTER TABLE rating ADD CONSTRAINT CHK_Rating_Value CHECK (rating BETWEEN 1 AND 10);
 
 -- Ensure Comments Are Not Empty
-ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (LEN(comment_text) > 0);
+ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (CAST(comment_text AS VARCHAR(MAX)) > 0);
 
 -- Ensure Release Date Is Not in the Future
 ALTER TABLE reel ADD CONSTRAINT CHK_Release_Date CHECK (release_date <= GETDATE());
