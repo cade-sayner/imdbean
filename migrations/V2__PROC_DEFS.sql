@@ -1,4 +1,4 @@
--- This stored procedure, GetOrderedUserGenres, retrieves and ranks the genres a user engages with the most.
+-- Retrieve and rank the genres a user engages with the most.
 -- It takes a username as input and calculates a "genre score" for each genre the user has interacted with.
 -- The genre score is computed as: 
 --    70% weight from the user's average rating for scenes in that genre 
@@ -30,7 +30,7 @@ BEGIN
 END;
 GO
 
--- This stored procedure, FindDialog, allows users to search for a specific word or phrase within dialog lines.
+-- Allow users to search for a specific word or phrase within dialog lines.
 -- It takes a search term as input and retrieves matching dialog entries along with contextual information.
 -- The result includes:
 --   - The dialog ID, text, and its order in the scene.
@@ -61,3 +61,35 @@ BEGIN
     WHERE d.line_text LIKE '%' + @searchTerm + '%'
 END;
 GO
+
+
+-- Create leaderboard of most active users
+CREATE PROCEDURE GetLeaderboard
+    @recency_cutoff INT = 30,    -- No. of days to consider 
+    @comment_coeff FLOAT = 2.0,
+    @rating_coeff FLOAT = 1.0
+AS BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        u.id AS user_id,
+        u.username,
+        COALESCE(comment_count, 0) AS total_comments,
+        COALESCE(rating_count, 0) AS total_ratings,
+        (@comment_coeff * COALESCE(comment_count, 0) + @rating_coeff * COALESCE(rating_count, 0)) AS activity_score
+    FROM users u
+    LEFT JOIN (
+        -- Get no. of comments per user in the last p_days
+        SELECT user_id, COUNT(*) AS comment_count
+        FROM comment
+        WHERE DATEDIFF(day, timestamp, CURRENT_TIMESTAMP) <= @recency_cutoff
+        GROUP BY user_id
+    ) c ON u.id = c.user_id
+    LEFT JOIN (
+        -- Get no. of ratings per user in the last p_days
+        SELECT user_id, COUNT(*) AS rating_count
+        FROM rating
+        WHERE DATEDIFF(day, timestamp, CURRENT_TIMESTAMP) <= @recency_cutoff
+        GROUP BY user_id
+    ) r ON u.id = r.user_id
+    ORDER BY activity_score DESC, u.username;
+END;
