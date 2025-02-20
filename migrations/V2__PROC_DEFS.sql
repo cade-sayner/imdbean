@@ -12,7 +12,6 @@ CREATE PROCEDURE GetOrderedUserGenres
 AS
 BEGIN
     SET NOCOUNT ON;
-
     SELECT 
         U.id, 
         U.username, 
