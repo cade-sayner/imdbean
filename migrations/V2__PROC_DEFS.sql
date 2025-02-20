@@ -113,3 +113,25 @@ BEGIN
     ORDER BY average_rating DESC
 END;
 GO
+
+CREATE PROCEDURE GetPreferredActorsByUser
+    @UserID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        A.Name AS ActorName,
+        A.Bio,
+        A.date_of_birth,
+		S.title AS SceneTitle,
+        AVG(R.Rating) AS AvgRating
+    FROM Rating R
+    INNER JOIN [Scene] S ON R.scene_id = S.ID
+    INNER JOIN Scene_Actor SA ON S.ID = SA.scene_id
+    INNER JOIN Actor A ON SA.actor_id = A.ID
+	INNER JOIN users U on R.user_id = U.id
+    WHERE R.user_id = UserID
+    GROUP BY A.ID, A.Name, A.Bio, A.date_of_birth, S.title
+    ORDER BY AvgRating DESC;
+END;
