@@ -649,7 +649,14 @@ VALUES
 (12, 2, 'So much nostalgia watching this again.', '2025-02-17 18:10:00'),
 (13, 3, 'One of the funniest shows ever!', '2025-02-17 18:40:00'),
 (14, 4, 'Teddy deserves his own episode.', '2025-02-17 19:10:00'),
-(15, 5, 'This scene will never get old.', '2025-02-17 19:40:00');
+(15, 5, 'This scene will never get old.', '2025-02-17 19:40:00'),
+(4, 4, 'Watching it again and it''s hilarious.', '2025-02-19 12:35:00.000'),
+(5, 1, 'What exam was he writing?', '2025-02-19 13:55:00.000'),
+(6, 1, 'The exam scene kept me up all night', '2025-02-16 02:15:00.000'),
+(15, 3, 'There is that church?', '2025-02-16 10:16:00.000'),
+(6, 2, 'I''m gonna vom', '2025-02-16 10:17:00.000'),
+(1, 1, 'I am A.D.D.I.C.T.E.D', '2025-02-21 10:16:00.000'),
+(7, 1, 'Who is mr bean?', '2025-02-12 12:35:00.000');
 GO
 
 
