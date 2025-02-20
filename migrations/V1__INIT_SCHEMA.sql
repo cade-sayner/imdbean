@@ -342,6 +342,7 @@ FROM scene s
 LEFT JOIN rating r ON s.id = r.scene_id
 GROUP BY s.id, s.title, s.plot_description, s.filming_date, s.location_id;
 
+GO
 CREATE VIEW MyUsers AS 
 SELECT * FROM Users WHERE username = 'beanfan99'
 GO
