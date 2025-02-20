@@ -1,0 +1,45 @@
+CREATE LOGIN patron WITH PASSWORD = 'readonlyuser';
+CREATE USER patron FOR LOGIN patron;
+ALTER ROLE db_datareader ADD MEMBER patron;
+
+
+CREATE LOGIN beanfan99 WITH PASSWORD = 'wearerestricting';
+CREATE USER beanfan99 FOR LOGIN beanfan99;
+GO
+
+
+GRANT CONNECT TO beanfan99;
+REVOKE CONTROL ON DATABASE::IMDBean FROM beanfan99;  
+REVOKE VIEW DEFINITION TO beanfan99;
+GO
+
+
+DECLARE @TableName NVARCHAR(MAX)
+DECLARE TableCursor CURSOR FOR 
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo'
+
+OPEN TableCursor
+FETCH NEXT FROM TableCursor INTO @TableName
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC('DENY SELECT, INSERT, UPDATE, DELETE ON dbo.' + @TableName + ' TO beanfan99;')
+    FETCH NEXT FROM TableCursor INTO @TableName
+END
+
+CLOSE TableCursor
+DEALLOCATE TableCursor
+GO
+
+
+GRANT SELECT, UPDATE ON UsersFiltered TO beanfan99;  
+GRANT SELECT, INSERT, UPDATE, DELETE ON CommentFiltered TO beanfan99;
+GRANT SELECT, INSERT, UPDATE, DELETE ON RatingFiltered TO beanfan99;
+GO
+
+
+GRANT SELECT ON OBJECT::dbo.UsersFiltered TO beanfan99;
+GRANT SELECT, INSERT, UPDATE, DELETE ON OBJECT::dbo.CommentFiltered TO beanfan99;
+GRANT SELECT, INSERT, UPDATE, DELETE ON OBJECT::dbo.RatingFiltered TO beanfan99;
+GO
+
