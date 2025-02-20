@@ -67,18 +67,27 @@ CREATE PROCEDURE FindHighestRatedSeriesByUser
 AS
 BEGIN
     SET NOCOUNT ON;
+
     SELECT 
         s.id AS series_id,
         s.title AS series_title,
         AVG(rt.rating) AS average_rating
-    FROM [users] u
-    JOIN rating rt ON u.id = rt.user_id
-    JOIN scene sc ON rt.scene_id = sc.id
-    JOIN reel r ON sc.reel_id = r.id
-    JOIN series s ON r.series_id = s.id
-    WHERE u.username = @username
-    GROUP BY s.id, s.title
-    ORDER BY average_rating DESC
+    FROM 
+        [users] u
+    JOIN 
+        rating rt ON u.id = rt.user_id
+    JOIN 
+        scene sc ON rt.scene_id = sc.id
+    JOIN 
+        reel r ON sc.reel_id = r.id
+    JOIN 
+        series s ON r.series_id = s.id
+    WHERE 
+        u.username = @username
+    GROUP BY 
+        s.id, s.title
+    ORDER BY 
+        average_rating DESC
 END;
 GO
 
