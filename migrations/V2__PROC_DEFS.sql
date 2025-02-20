@@ -121,12 +121,38 @@ BEGIN
 END;
 
 
+CREATE PROCEDURE PopularScenes
+	@ageInHours INT
+AS
+BEGIN
+	SELECT 
+		c.scene_id,
+		AVG(CAST(r.rating as numeric(38,6))) *
+		SUM(dbo.DiminishAge(c.[timestamp])) AS popularity 
+	FROM [IMDBean].[dbo].comment c
+	LEFT JOIN [IMDBean].[dbo].rating r ON c.scene_id = r.scene_id
+	
+	WHERE 
+		-- Ensure both timestamps fall within the last @ageInHours
+		c.[timestamp] >= DATEADD(HOUR, -@ageInHours, GETDATE()) AND 
+		r.[timestamp] >= DATEADD(HOUR, -@ageInHours, GETDATE())
+
+	GROUP BY c.scene_id
+	ORDER BY popularity DESC;
+END;
+
+CREATE FUNCTION DiminishAge(@dateVar datetime)
+RETURNS numeric(38,6) AS
+BEGIN
+	RETURN POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)
+END
 -- Get Trending Reels based on some heiristic
 CREATE PROCEDURE GetTrendingReels
     (@timeframe INT = 7
     @comment_score_coeff FLOAT = 2.0,
     @rating_score_coeff FLOAT = 1.0)
-  AS BEGIN
+  AS 
+BEGIN
 	SET NOCOUNT ON;
 	WITH ReelsByRatingScore (reel_id, reel_title, rating_score) AS
 	(
