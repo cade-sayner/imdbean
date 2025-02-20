@@ -94,7 +94,7 @@ AS BEGIN
 END;
 GO
 
-GO
+-- Find the highest rated series by user and sort
 CREATE PROCEDURE FindHighestRatedSeriesByUser
     @username NVARCHAR(255)
 AS
