@@ -375,15 +375,15 @@ INSERT INTO scene (reel_id, timestamp, duration, title, plot_description, filmin
   -- Scenes for "Mr. Bean: 30th Anniversary Special" (2020)
   (14, 0, 700, 'Mr. Bean’s Interview', 
    'A behind-the-scenes look at Rowan Atkinson discussing the origins of Mr. Bean.', 
-   '2020-09-15', NULL),
+   '2020-09-15', 1),
 
   (14, 700, 500, 'Bean’s Funniest Outtakes', 
    'Never-before-seen bloopers from Mr. Bean episodes.', 
-   '2020-09-15', NULL),
+   '2020-09-15', 2),
 
   (14, 1200, 550, 'The Lost Episode', 
    'An unaired Mr. Bean sketch is shown for the first time.', 
-   '2020-09-15', NULL);
+   '2020-09-15', 3);
 
 INSERT INTO actor (name, bio, date_of_birth) VALUES
   ('Rowan Atkinson', 'British actor and comedian known for playing Mr. Bean.', '1955-01-06'),

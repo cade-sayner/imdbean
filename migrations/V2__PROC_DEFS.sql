@@ -64,9 +64,9 @@ GO
 
 -- Create leaderboard of most active users
 CREATE PROCEDURE GetLeaderboard
-    @recency_cutoff INT = 30,    -- No. of days to consider 
+    (@recency_cutoff INT = 30,    -- No. of days to consider 
     @comment_coeff FLOAT = 2.0,
-    @rating_coeff FLOAT = 1.0
+    @rating_coeff FLOAT = 1.0)
 AS BEGIN
     SET NOCOUNT ON;
     SELECT
@@ -94,7 +94,7 @@ AS BEGIN
 END;
 GO
 
-
+GO
 CREATE PROCEDURE FindHighestRatedSeriesByUser
     @username NVARCHAR(255)
 AS
@@ -126,12 +126,12 @@ BEGIN
         A.date_of_birth,
         S.title AS SceneTitle,
         AVG(R.Rating) AS AvgRating
-    FROM Users U
-    LEFT JOIN Rating R ON U.ID = R.user_id
-    LEFT JOIN [Scene] S ON R.scene_id = S.ID
-    LEFT JOIN Scene_Actor SA ON S.ID = SA.scene_id
-    LEFT JOIN Actor A ON SA.actor_id = A.ID
-    WHERE U.ID = @UserID
+    FROM Rating R
+    INNER JOIN [Scene] S ON R.scene_id = S.ID
+    INNER JOIN Scene_Actor SA ON S.ID = SA.scene_id
+    INNER JOIN Actor A ON SA.actor_id = A.ID
+	INNER JOIN users U on R.user_id = U.id
+    WHERE R.user_id = @UserID
     GROUP BY A.ID, A.Name, A.Bio, A.date_of_birth, S.title
     ORDER BY AvgRating DESC;
 END;
