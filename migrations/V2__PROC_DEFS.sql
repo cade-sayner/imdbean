@@ -152,7 +152,7 @@ END
 GO
 -- Get Trending Reels 
 CREATE PROCEDURE GetTrendingReels
-    (@timeframe INT = 7
+    (@timeframe INT = 7,
     @comment_score_coeff FLOAT = 2.0,
     @rating_score_coeff FLOAT = 1.0)
   AS 
