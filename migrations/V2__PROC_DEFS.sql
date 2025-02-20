@@ -1,5 +1,4 @@
 -- Retrieve and rank the genres a user engages with the most.
-
 CREATE PROCEDURE GetOrderedUserGenres
     @Username NVARCHAR(255)
 AS
@@ -119,8 +118,8 @@ BEGIN
     GROUP BY A.ID, A.Name, A.Bio, A.date_of_birth, S.title
     ORDER BY AvgRating DESC;
 END;
-
 GO
+
 CREATE PROCEDURE PopularScenes
 	@ageInHours INT
 AS
@@ -140,17 +139,17 @@ BEGIN
 	GROUP BY c.scene_id
 	ORDER BY popularity DESC;
 END;
+GO
 
 GO
 CREATE FUNCTION DiminishAge(@dateVar datetime)
 RETURNS numeric(38,6) AS
 BEGIN
-	RETURN POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)
-END
-
-
+	RETURN 1.0/(EXP(POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)))
+END;
 GO
--- Get Trending Reels 
+
+-- Get Trending Reels based on some heiristic
 CREATE PROCEDURE GetTrendingReels
     (@timeframe INT = 7,
     @comment_score_coeff FLOAT = 2.0,
@@ -180,3 +179,4 @@ BEGIN
 	inner join ReelsByCommentCount as RC on RC.reel_id = RS.reel_id
 	order by trending_score desc
 END
+GO
