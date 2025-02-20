@@ -43,3 +43,8 @@ ADD CONSTRAINT CHK_end_date CHECK(end_date >= start_date)
 ALTER TABLE Thumbnail
 ALTER COLUMN thumbnail_url VARCHAR(512) NOT NULL 
  
+
+-- Make composite key from user_id and scene_id
+-- Enforces uniqueness s.t. a user can rate a scene at most one time
+ALTER TABLE Rating
+ADD CONSTRAINT PK_rating PRIMARY KEY (user_id, scene_id);
