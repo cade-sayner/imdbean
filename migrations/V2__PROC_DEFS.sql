@@ -15,7 +15,7 @@ BEGIN
     SELECT 
         U.id, 
         U.username, 
-        AVG(R.rating) * 0.70 + COUNT(G.name) * 0.30 AS actor_score, 
+        AVG(R.rating) * 0.70 + COUNT(G.name) * 0.30 AS genre_score, 
         G.name 
     FROM users AS U
     INNER JOIN rating AS R ON U.id = R.user_id 
@@ -25,7 +25,7 @@ BEGIN
 	INNER JOIN genre AS G ON G.id = RG.genre_id
     WHERE U.username = @Username
     GROUP BY U.id, U.username, G.name
-    ORDER BY actor_score DESC;
+    ORDER BY genre_score DESC;
 END;
 GO
 
@@ -58,35 +58,6 @@ BEGIN
     JOIN [reel] r ON s.reel_id = r.id
     JOIN [actor] a ON d.actor_id = a.id
     WHERE d.line_text LIKE '%' + @searchTerm + '%'
-END;
-GO
-
-CREATE PROCEDURE FindHighestRatedSeriesByUser
-    @username NVARCHAR(255)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        s.id AS series_id,
-        s.title AS series_title,
-        AVG(rt.rating) AS average_rating
-    FROM 
-        [users] u
-    JOIN 
-        rating rt ON u.id = rt.user_id
-    JOIN 
-        scene sc ON rt.scene_id = sc.id
-    JOIN 
-        reel r ON sc.reel_id = r.id
-    JOIN 
-        series s ON r.series_id = s.id
-    WHERE 
-        u.username = @username
-    GROUP BY 
-        s.id, s.title
-    ORDER BY 
-        average_rating DESC
 END;
 GO
 
