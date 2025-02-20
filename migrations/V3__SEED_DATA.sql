@@ -713,9 +713,3 @@ INSERT INTO [reel_genre] ([reel_id], [genre_id]) VALUES
 (25, 1), (25, 2), (25, 3), (25, 6), (25, 7),
 (26, 1), (26, 2), (26, 3), (26, 6), (26, 7);
 GO
-
-
-
-
-
-INSERT INTO [thumbnail]
