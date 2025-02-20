@@ -543,7 +543,41 @@ INSERT INTO [users] (username, email, password_hash, join_date) VALUES
   ('britishhumour', 'britishhumour@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 10:55:00'),
   ('lolmoments', 'lolmoments@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:00:00'),
   ('teddyfan', 'teddyfan@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:05:00'),
-  ('nostalgicviewer', 'nostalgic@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:10:00');
+  ('nostalgicviewer', 'nostalgic@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:10:00'),
+  ('funnybean32', 'funnybean32@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:15:00'),
+  ('jokesnob', 'jokesnob@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:20:00'),
+  ('misterbeanfan', 'misterbeanfan@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:25:00'),
+  ('laughterguru', 'laughterguru@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:30:00'),
+  ('beanmania', 'beanmania@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:35:00'),
+  ('nostalgicfun', 'nostalgicfun@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:40:00'),
+  ('laughmania', 'laughmania@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:45:00'),
+  ('humorenthusiast', 'humorenthusiast@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:50:00'),
+  ('mrbeanlover', 'mrbeanlover@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 11:55:00'),
+  ('comedyfanatic', 'comedyfanatic@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:00:00'),
+  ('tvshowaddict', 'tvshowaddict@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:05:00'),
+  ('laughfactory', 'laughfactory@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:10:00'),
+  ('joketeller', 'joketeller@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:15:00'),
+  ('vintagehumor', 'vintagehumor@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:20:00'),
+  ('oldschoollaughs', 'oldschoollaughs@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:25:00'),
+  ('funnybones', 'funnybones@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:30:00'),
+  ('laughterlover', 'laughterlover@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:35:00'),
+  ('humorheaven', 'humorheaven@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:40:00'),
+  ('beanaddict', 'beanaddict@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:45:00'),
+  ('retrofanatic', 'retrofanatic@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:50:00'),
+  ('tvfanclub', 'tvfanclub@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 12:55:00'),
+  ('laughingoutloud', 'laughingoutloud@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:00:00'),
+  ('tvjunkie', 'tvjunkie@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:05:00'),
+  ('funnyguy42', 'funnyguy42@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:10:00'),
+  ('tvaddict45', 'tvaddict45@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:15:00'),
+  ('comedycentral', 'comedycentral@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:20:00'),
+  ('funnymoments', 'funnymoments@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:25:00'),
+  ('laughitup', 'laughitup@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:30:00'),
+  ('beanfiend', 'beanfiend@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:35:00'),
+  ('hilariousbean', 'hilariousbean@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:40:00'),
+  ('humoroverload', 'humoroverload@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:45:00'),
+  ('funnyinspired', 'funnyinspired@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:50:00'),
+  ('humoraddiction', 'humoraddiction@email.com', '$2b$12$ZfJBo4oeb/9VaTtPaIbRrOBB7gTpo5a1eABME1TV6oXHQ0Po.3c0m', '2025-02-17 13:55:00');
+
 
 INSERT INTO rating (user_id, scene_id, rating, timestamp) 
 VALUES 
@@ -621,3 +655,4 @@ GO
 
 
 
+INSERT INTO [thumbnail]
