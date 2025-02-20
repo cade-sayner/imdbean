@@ -1,13 +1,45 @@
-CREATE PROCEDURE GetAverageRating
-    @scene_id INT
+-- This stored procedure, GetOrderedUserGenres, retrieves and ranks the genres a user engages with the most.
+-- It takes a username as input and calculates a "genre score" for each genre the user has interacted with.
+-- The genre score is computed as: 
+--    70% weight from the user's average rating for scenes in that genre 
+--    30% weight from the number of scenes the user has rated in that genre.
+-- The procedure joins multiple tables: users, ratings, scenes, reels, reel-genre mappings, and genres.
+-- Results are grouped by user ID, username, and genre name, then sorted in descending order of genre score.
+-- This can be useful for features like personalized recommendations or "Your Favorite Genres" on a user profile.
+
+CREATE PROCEDURE GetOrderedUserGenres
+    @Username NVARCHAR(255)
 AS
 BEGIN
-    SELECT AVG(rating) AS AverageRating
-    FROM rating
-    WHERE scene_id = @scene_id;
-END
+    SET NOCOUNT ON;
+
+    SELECT 
+        U.id, 
+        U.username, 
+        AVG(R.rating) * 0.70 + COUNT(G.name) * 0.30 AS actor_score, 
+        G.name 
+    FROM users AS U
+    INNER JOIN rating AS R ON U.id = R.user_id 
+    INNER JOIN scene AS S ON R.scene_id = S.id
+    INNER JOIN reel AS RL ON R.scene_id = S.id
+    INNER JOIN reel_genre AS RG ON RG.reel_id = RL.id
+	INNER JOIN genre AS G ON G.id = RG.genre_id
+    WHERE U.username = @Username
+    GROUP BY U.id, U.username, G.name
+    ORDER BY actor_score DESC;
+END;
 GO
 
+-- This stored procedure, FindDialog, allows users to search for a specific word or phrase within dialog lines.
+-- It takes a search term as input and retrieves matching dialog entries along with contextual information.
+-- The result includes:
+--   - The dialog ID, text, and its order in the scene.
+--   - The actor who delivered the line.
+--   - The scene ID and title where the dialog appears.
+--   - The reel ID and title (episode or movie) the scene belongs to.
+-- The procedure uses a JOIN across dialog, scene, reel, and actor tables to provide detailed results.
+-- The WHERE clause employs a wildcard search (LIKE '%@searchTerm%') to find partial matches within dialog lines.
+-- This can be useful for searching quotes, generating transcripts, or building a "famous lines" feature.
 CREATE PROCEDURE FindDialog
     @searchTerm NVARCHAR(255)
 AS
