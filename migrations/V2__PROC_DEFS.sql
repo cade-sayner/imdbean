@@ -133,8 +133,7 @@ BEGIN
 	
 	WHERE 
 		-- Ensure both timestamps fall within the last @ageInHours
-		DATEDIFF(HOUR, c.[timestamp], GETDATE()) <= @ageInHours AND 
-		DATEDIFF(HOUR, r.[timestamp], GETDATE()) <= @ageInHours
+		DATEDIFF(HOUR, c.[timestamp], GETDATE()) <= @ageInHours
 
 	GROUP BY c.scene_id
 	ORDER BY popularity DESC;
