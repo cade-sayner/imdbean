@@ -92,6 +92,7 @@ AS BEGIN
     ) r ON u.id = r.user_id
     ORDER BY activity_score DESC, u.username;
 END;
+GO
 
 
 CREATE PROCEDURE FindHighestRatedSeriesByUser
