@@ -126,15 +126,15 @@ AS
 BEGIN
 	SELECT 
 		c.scene_id,
-		AVG(CAST(r.rating as numeric(38,6))) *
+		(AVG(CAST(r.rating as numeric(38,6)))+1) *
 		SUM(dbo.DiminishAge(c.[timestamp])) AS popularity 
 	FROM [IMDBean].[dbo].comment c
 	LEFT JOIN [IMDBean].[dbo].rating r ON c.scene_id = r.scene_id
 	
 	WHERE 
 		-- Ensure both timestamps fall within the last @ageInHours
-		c.[timestamp] >= DATEADD(HOUR, -@ageInHours, GETDATE()) AND 
-		r.[timestamp] >= DATEADD(HOUR, -@ageInHours, GETDATE())
+		DATEDIFF(HOUR, c.[timestamp], GETDATE()) <= @ageInHours AND 
+		DATEDIFF(HOUR, r.[timestamp], GETDATE()) <= @ageInHours
 
 	GROUP BY c.scene_id
 	ORDER BY popularity DESC;
