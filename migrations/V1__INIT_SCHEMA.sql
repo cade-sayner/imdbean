@@ -138,7 +138,7 @@ CREATE TABLE [role_permissions] (
 )
 GO
 
-ALTER TABLE [scene] ADD FOREIGN KEY ([reel_id]) REFERENCES [reel] ([id])
+ALTER TABLE [scene] ADD FOREIGN KEY ([reel_id]) REFERENCES [reel] ([id]) ON DELETE CASCADE
 GO
 
 ALTER TABLE [scene] ADD FOREIGN KEY ([location_id]) REFERENCES [location] ([id])
@@ -150,13 +150,13 @@ GO
 ALTER TABLE [reel] ADD FOREIGN KEY ([series_id]) REFERENCES [series] ([id])
 GO
 
-ALTER TABLE [scene_actor] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id])
+ALTER TABLE [scene_actor] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id]) ON DELETE CASCADE
 GO
 
 ALTER TABLE [scene_actor] ADD FOREIGN KEY ([actor_id]) REFERENCES [actor] ([id])
 GO
 
-ALTER TABLE [dialog] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id])
+ALTER TABLE [dialog] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id]) ON DELETE CASCADE
 GO
 
 ALTER TABLE [dialog] ADD FOREIGN KEY ([actor_id]) REFERENCES [actor] ([id])
@@ -165,16 +165,16 @@ GO
 ALTER TABLE [rating] ADD FOREIGN KEY ([user_id]) REFERENCES [users] ([id])
 GO
 
-ALTER TABLE [rating] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id])
+ALTER TABLE [rating] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id]) ON DELETE CASCADE
 GO
 
 ALTER TABLE [comment] ADD FOREIGN KEY ([user_id]) REFERENCES [users] ([id])
 GO
 
-ALTER TABLE [comment] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id])
+ALTER TABLE [comment] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id]) ON DELETE CASCADE
 GO
 
-ALTER TABLE [thumbnail] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id])
+ALTER TABLE [thumbnail] ADD FOREIGN KEY ([scene_id]) REFERENCES [scene] ([id]) ON DELETE CASCADE
 GO
 
 ALTER TABLE [thumbnail] ADD FOREIGN KEY ([scene_id]) REFERENCES [reel] ([id])
@@ -268,20 +268,6 @@ BEGIN
     END
     INSERT INTO rating (user_id, scene_id, rating, timestamp)
     SELECT user_id, scene_id, rating, timestamp FROM inserted;
-END;
-GO
--- Cascade Delete: Remove Related Data When a Scene Is Deleted
-CREATE TRIGGER trg_CascadeDeleteScene
-ON scene
-INSTEAD OF DELETE
-AS
-BEGIN
-    DELETE FROM scene_actor WHERE scene_id IN (SELECT id FROM deleted);
-    DELETE FROM dialog WHERE scene_id IN (SELECT id FROM deleted);
-    DELETE FROM rating WHERE scene_id IN (SELECT id FROM deleted);
-    DELETE FROM comment WHERE scene_id IN (SELECT id FROM deleted);
-    DELETE FROM thumbnail WHERE scene_id IN (SELECT id FROM deleted);
-    DELETE FROM scene WHERE id IN (SELECT id FROM deleted);
 END;
 GO
 

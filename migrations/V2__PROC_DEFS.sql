@@ -1,11 +1,4 @@
 -- Retrieve and rank the genres a user engages with the most.
--- It takes a username as input and calculates a "genre score" for each genre the user has interacted with.
--- The genre score is computed as: 
---    70% weight from the user's average rating for scenes in that genre 
---    30% weight from the number of scenes the user has rated in that genre.
--- The procedure joins multiple tables: users, ratings, scenes, reels, reel-genre mappings, and genres.
--- Results are grouped by user ID, username, and genre name, then sorted in descending order of genre score.
--- This can be useful for features like personalized recommendations or "Your Favorite Genres" on a user profile.
 
 CREATE PROCEDURE GetOrderedUserGenres
     @Username NVARCHAR(255)
@@ -29,16 +22,7 @@ BEGIN
 END;
 GO
 
--- Allow users to search for a specific word or phrase within dialog lines.
--- It takes a search term as input and retrieves matching dialog entries along with contextual information.
--- The result includes:
---   - The dialog ID, text, and its order in the scene.
---   - The actor who delivered the line.
---   - The scene ID and title where the dialog appears.
---   - The reel ID and title (episode or movie) the scene belongs to.
--- The procedure uses a JOIN across dialog, scene, reel, and actor tables to provide detailed results.
--- The WHERE clause employs a wildcard search (LIKE '%@searchTerm%') to find partial matches within dialog lines.
--- This can be useful for searching quotes, generating transcripts, or building a "famous lines" feature.
+-- Allow users to search for a specific word or phrase within dialog lines..
 CREATE PROCEDURE FindDialog
     @searchTerm NVARCHAR(255)
 AS
@@ -136,6 +120,7 @@ BEGIN
     ORDER BY AvgRating DESC;
 END;
 
+
 CREATE PROCEDURE PopularScenes
 	@ageInHours INT
 AS
@@ -160,4 +145,34 @@ CREATE FUNCTION DiminishAge(@dateVar datetime)
 RETURNS numeric(38,6) AS
 BEGIN
 	RETURN POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)
+END
+-- Get Trending Reels based on some heiristic
+CREATE PROCEDURE GetTrendingReels
+    (@timeframe INT = 7
+    @comment_score_coeff FLOAT = 2.0,
+    @rating_score_coeff FLOAT = 1.0)
+  AS 
+BEGIN
+	SET NOCOUNT ON;
+	WITH ReelsByRatingScore (reel_id, reel_title, rating_score) AS
+	(
+		Select R.id, R.title, AVG(Coalesce(rating, 0)) from reel as R 
+		left outer join scene as S on S.reel_id = R.id
+		left outer join rating as RT on RT.scene_id = S.id
+		Where DATEDIFF(DAY, RT.timestamp, CURRENT_TIMESTAMP) < 7
+		Group by R.id, R.title
+	),
+
+	ReelsByCommentCount (reel_id, reel_title, comment_count) AS 
+	(
+		Select R.id, R.title, Count(*) from reel as R 
+		left outer join scene as S on S.reel_id = R.id
+		left outer join comment as C on C.scene_id = S.id
+		Where DATEDIFF(DAY, C.timestamp, CURRENT_TIMESTAMP) < 7
+		Group by R.id, R.title
+	)
+
+	Select RS.reel_id, RS.reel_title, @comment_score_coeff * RS.rating_score + @rating_score_coeff * RC.comment_count as trending_score from ReelsByRatingScore as RS
+	inner join ReelsByCommentCount as RC on RC.reel_id = RS.reel_id
+	order by trending_score desc
 END
