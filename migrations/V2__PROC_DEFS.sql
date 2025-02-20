@@ -141,6 +141,7 @@ BEGIN
 END;
 GO
 
+GO
 CREATE FUNCTION DiminishAge(@dateVar datetime)
 RETURNS numeric(38,6) AS
 BEGIN
