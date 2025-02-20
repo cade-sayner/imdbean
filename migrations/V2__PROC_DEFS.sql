@@ -120,7 +120,7 @@ BEGIN
     ORDER BY AvgRating DESC;
 END;
 
-
+GO
 CREATE PROCEDURE PopularScenes
 	@ageInHours INT
 AS
@@ -141,12 +141,16 @@ BEGIN
 	ORDER BY popularity DESC;
 END;
 
+GO
 CREATE FUNCTION DiminishAge(@dateVar datetime)
 RETURNS numeric(38,6) AS
 BEGIN
 	RETURN POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)
 END
--- Get Trending Reels based on some heiristic
+
+
+GO
+-- Get Trending Reels 
 CREATE PROCEDURE GetTrendingReels
     (@timeframe INT = 7
     @comment_score_coeff FLOAT = 2.0,
