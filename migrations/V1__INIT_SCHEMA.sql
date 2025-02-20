@@ -202,7 +202,7 @@ GO
 -- Constraints for data integrity
 
 -- Ensure Ratings Are Between 1 and 10
-ALTER TABLE rating ADD CONSTRAINT CHK_Rating_Value CHECK (rating BETWEEN 1 AND 10);
+ALTER TABLE rating ADD CONSTRAINT CHK_Rating_Value CHECK (rating BETWEEN 1 AND 5);
 
 -- Ensure Comments Are Not Empty
 ALTER TABLE comment ADD CONSTRAINT CHK_Comment_Text CHECK (LEN(comment_text) > 0);
