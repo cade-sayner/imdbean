@@ -124,19 +124,19 @@ CREATE PROCEDURE PopularScenes
 	@ageInHours INT
 AS
 BEGIN
-	SELECT 
-		c.scene_id,
-		(AVG(CAST(r.rating as numeric(38,6)))+1) *
-		SUM(dbo.DiminishAge(c.[timestamp])) AS popularity 
-	FROM [IMDBean].[dbo].comment c
-	LEFT JOIN [IMDBean].[dbo].rating r ON c.scene_id = r.scene_id
-	
-	WHERE 
-		-- Ensure both timestamps fall within the last @ageInHours
-		DATEDIFF(HOUR, c.[timestamp], GETDATE()) <= @ageInHours
+SELECT 
+	s.title,
+	c.scene_id,
+	(AVG(CAST(r.rating as numeric(38,6)))+1) *
+	SUM(dbo.DiminishAge(c.[timestamp])) AS popularity 
+FROM [IMDBean].[dbo].comment c
+LEFT JOIN [IMDBean].[dbo].rating r ON c.scene_id = r.scene_id
+LEFT JOIN [IMDBean].[dbo].scene s on s.id = c.scene_id
 
-	GROUP BY c.scene_id
-	ORDER BY popularity DESC;
+WHERE 
+	DATEDIFF(HOUR, c.[timestamp], GETDATE()) <= @ageInHours
+GROUP BY c.scene_id, s.title
+ORDER BY popularity DESC;
 END;
 GO
 
