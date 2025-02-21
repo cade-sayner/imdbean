@@ -1,5 +1,5 @@
 -- Retrieve and rank the genres a user engages with the most.
-CREATE PROCEDURE GetOrderedUserGenres
+CREATE OR ALTER PROCEDURE GetOrderedUserGenres
     @Username NVARCHAR(255)
 AS
 BEGIN
@@ -22,7 +22,7 @@ END;
 GO
 
 -- Allow users to search for a specific word or phrase within dialog lines..
-CREATE PROCEDURE FindDialog
+CREATE OR ALTER PROCEDURE FindDialog
     @searchTerm NVARCHAR(255)
 AS
 BEGIN
@@ -46,7 +46,7 @@ GO
 
 
 -- Create leaderboard of most active users
-CREATE PROCEDURE GetLeaderboard
+CREATE OR ALTER PROCEDURE GetLeaderboard
     (@recency_cutoff INT = 30,    -- No. of days to consider 
     @comment_coeff FLOAT = 2.0,
     @rating_coeff FLOAT = 1.0)
@@ -78,7 +78,7 @@ END;
 GO
 
 -- Find the highest rated series by user and sort
-CREATE PROCEDURE FindHighestRatedSeriesByUser
+CREATE OR ALTER PROCEDURE FindHighestRatedSeriesByUser
     @username NVARCHAR(255)
 AS
 BEGIN
@@ -98,7 +98,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE GetPreferredActorsByUser
+CREATE OR ALTER PROCEDURE GetPreferredActorsByUser
     @UserID INT
 AS
 BEGIN
@@ -120,7 +120,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE PopularScenes
+CREATE OR ALTER PROCEDURE PopularScenes
 	@ageInHours INT
 AS
 BEGIN
@@ -140,8 +140,7 @@ ORDER BY popularity DESC;
 END;
 GO
 
-GO
-CREATE FUNCTION DiminishAge(@dateVar datetime)
+CREATE OR ALTER FUNCTION DiminishAge(@dateVar datetime)
 RETURNS numeric(38,6) AS
 BEGIN
 	RETURN 1.0/(EXP(POWER(DATEDIFF_BIG(hour, @dateVar, GETDATE())/168.0,2)))
@@ -149,7 +148,7 @@ END;
 GO
 
 -- Get Trending Reels based on some heiristic
-CREATE PROCEDURE GetTrendingReels
+CREATE OR ALTER PROCEDURE GetTrendingReels
     (@timeframe INT = 7,
     @comment_score_coeff FLOAT = 2.0,
     @rating_score_coeff FLOAT = 1.0)
